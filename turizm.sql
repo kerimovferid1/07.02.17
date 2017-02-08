@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 07, 2017 at 09:44 PM
+-- Generation Time: Feb 08, 2017 at 07:28 AM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -54,7 +54,6 @@ CREATE TABLE `isci_musteri` (
 
 CREATE TABLE `musteri` (
   `id` int(11) NOT NULL,
-  `tur_id` int(11) DEFAULT NULL,
   `aldigi_turlar` varchar(20) DEFAULT NULL,
   `adi` varchar(20) DEFAULT NULL,
   `soyadi` varchar(20) DEFAULT NULL,
@@ -69,7 +68,8 @@ CREATE TABLE `musteri` (
 
 CREATE TABLE `sifaris` (
   `id` int(11) NOT NULL,
-  `sifaris_geliri` int(11) DEFAULT NULL
+  `sifaris_geliri` int(11) DEFAULT NULL,
+  `isci_id` int(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -82,7 +82,8 @@ CREATE TABLE `tur` (
   `id` int(11) NOT NULL,
   `tur_novu` varchar(20) DEFAULT NULL,
   `tur_vaxti` date DEFAULT NULL,
-  `sifaris_id` int(11) DEFAULT NULL
+  `sifaris_id` int(11) DEFAULT NULL,
+  `isci_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -107,21 +108,22 @@ ALTER TABLE `isci_musteri`
 -- Indexes for table `musteri`
 --
 ALTER TABLE `musteri`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `tur_id` (`tur_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `sifaris`
 --
 ALTER TABLE `sifaris`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `isci_id` (`isci_id`);
 
 --
 -- Indexes for table `tur`
 --
 ALTER TABLE `tur`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sifaris_id` (`sifaris_id`);
+  ADD KEY `sifaris_id` (`sifaris_id`),
+  ADD KEY `isci_id` (`isci_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -157,6 +159,12 @@ ALTER TABLE `tur`
 --
 
 --
+-- Constraints for table `isci`
+--
+ALTER TABLE `isci`
+  ADD CONSTRAINT `isci_ibfk_1` FOREIGN KEY (`id`) REFERENCES `sifaris` (`isci_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `isci_musteri`
 --
 ALTER TABLE `isci_musteri`
@@ -167,7 +175,7 @@ ALTER TABLE `isci_musteri`
 -- Constraints for table `musteri`
 --
 ALTER TABLE `musteri`
-  ADD CONSTRAINT `musteri_ibfk_1` FOREIGN KEY (`tur_id`) REFERENCES `tur` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `musteri_ibfk_1` FOREIGN KEY (`id`) REFERENCES `tur` (`isci_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tur`
